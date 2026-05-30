@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36811.4 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamForge.Api", "TeamForge.Api\TeamForge.Api.csproj", "{D6379B5E-A064-4060-879F-E20825023670}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamForge.Core", "TeamForge.Core\TeamForge.Core.csproj", "{5DB2EB69-8DCD-4F33-A38A-8420593221F4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D6379B5E-A064-4060-879F-E20825023670}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6379B5E-A064-4060-879F-E20825023670}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6379B5E-A064-4060-879F-E20825023670}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6379B5E-A064-4060-879F-E20825023670}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DB2EB69-8DCD-4F33-A38A-8420593221F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DB2EB69-8DCD-4F33-A38A-8420593221F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DB2EB69-8DCD-4F33-A38A-8420593221F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DB2EB69-8DCD-4F33-A38A-8420593221F4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3127701F-54BB-4237-A880-B19EC7A3619E}
+	EndGlobalSection
+EndGlobal
