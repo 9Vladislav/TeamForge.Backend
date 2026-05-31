@@ -186,25 +186,10 @@ public class ProfileService : IProfileService
 
     public async Task<ActivityPeriodDto> AddActivityPeriodAsync(int userId, AddActivityPeriodDto dto)
     {
-        if (dto.DayOfWeek < 1 || dto.DayOfWeek > 7)
-        {
-            throw new Exception("День тижня має бути від 1 до 7.");
-        }
+        ProfileValidator.ValidateAddActivityPeriod(dto);
 
-        if (!TimeOnly.TryParse(dto.TimeFrom, out var timeFrom))
-        {
-            throw new Exception("Некоректний час початку активності.");
-        }
-
-        if (!TimeOnly.TryParse(dto.TimeTo, out var timeTo))
-        {
-            throw new Exception("Некоректний час завершення активності.");
-        }
-
-        if (timeFrom >= timeTo)
-        {
-            throw new Exception("Час початку має бути меншим за час завершення.");
-        }
+        TimeOnly.TryParse(dto.TimeFrom, out var timeFrom);
+        TimeOnly.TryParse(dto.TimeTo, out var timeTo);
 
         var activityPeriod = new ActivityPeriod
         {
@@ -215,6 +200,35 @@ public class ProfileService : IProfileService
         };
 
         _context.ActivityPeriods.Add(activityPeriod);
+        await _context.SaveChangesAsync();
+
+        return MapToActivityPeriodDto(activityPeriod);
+    }
+
+    public async Task<ActivityPeriodDto> UpdateActivityPeriodAsync(
+        int userId,
+        int activityPeriodId,
+        UpdateActivityPeriodDto dto)
+    {
+        ProfileValidator.ValidateUpdateActivityPeriod(dto);
+
+        TimeOnly.TryParse(dto.TimeFrom, out var timeFrom);
+        TimeOnly.TryParse(dto.TimeTo, out var timeTo);
+
+        var activityPeriod = await _context.ActivityPeriods
+            .FirstOrDefaultAsync(ap =>
+                ap.ActivityPeriodId == activityPeriodId &&
+                ap.UserId == userId);
+
+        if (activityPeriod is null)
+        {
+            throw new Exception("Період активності не знайдено.");
+        }
+
+        activityPeriod.DayOfWeek = dto.DayOfWeek;
+        activityPeriod.TimeFrom = timeFrom;
+        activityPeriod.TimeTo = timeTo;
+
         await _context.SaveChangesAsync();
 
         return MapToActivityPeriodDto(activityPeriod);

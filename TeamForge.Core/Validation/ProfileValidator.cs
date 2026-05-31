@@ -50,6 +50,42 @@ public static class ProfileValidator
         }
     }
 
+    public static void ValidateAddActivityPeriod(AddActivityPeriodDto dto)
+    {
+        ValidateActivityPeriod(dto.DayOfWeek, dto.TimeFrom, dto.TimeTo);
+    }
+
+    public static void ValidateUpdateActivityPeriod(UpdateActivityPeriodDto dto)
+    {
+        ValidateActivityPeriod(dto.DayOfWeek, dto.TimeFrom, dto.TimeTo);
+    }
+
+    private static void ValidateActivityPeriod(
+        int dayOfWeek,
+        string timeFromValue,
+        string timeToValue)
+    {
+        if (dayOfWeek < 1 || dayOfWeek > 7)
+        {
+            throw new Exception("День тижня має бути від 1 до 7.");
+        }
+
+        if (!TimeOnly.TryParse(timeFromValue, out var timeFrom))
+        {
+            throw new Exception("Некоректний час початку активності.");
+        }
+
+        if (!TimeOnly.TryParse(timeToValue, out var timeTo))
+        {
+            throw new Exception("Некоректний час завершення активності.");
+        }
+
+        if (timeFrom >= timeTo)
+        {
+            throw new Exception("Час початку має бути меншим за час завершення.");
+        }
+    }
+
     private static bool IsValidEmail(string email)
     {
         return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");

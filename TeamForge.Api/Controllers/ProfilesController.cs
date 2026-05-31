@@ -130,6 +130,28 @@ public class ProfilesController : ControllerBase
         }
     }
 
+    [HttpPut("activity-periods/{activityPeriodId:int}")]
+    public async Task<IActionResult> UpdateActivityPeriod(
+        int activityPeriodId,
+        UpdateActivityPeriodDto dto)
+    {
+        try
+        {
+            var userId = GetCurrentUserId();
+
+            var result = await _profileService.UpdateActivityPeriodAsync(
+                userId,
+                activityPeriodId,
+                dto);
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
     [HttpDelete("activity-periods/{activityPeriodId:int}")]
     public async Task<IActionResult> DeleteActivityPeriod(int activityPeriodId)
     {
