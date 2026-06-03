@@ -55,28 +55,49 @@ public class ProfileService : IProfileService
             throw new Exception("Користувача не знайдено.");
         }
 
-        var email = dto.Email.Trim().ToLower();
-        var nickname = dto.Nickname.Trim();
-
-        var emailExists = await _context.Users
-            .AnyAsync(u => u.Email == email && u.UserId != userId);
-
-        if (emailExists)
+        if (!string.IsNullOrWhiteSpace(dto.Email))
         {
-            throw new Exception("Користувач з такою електронною поштою вже існує.");
+            var email = dto.Email.Trim().ToLower();
+
+            var emailExists = await _context.Users
+                .AnyAsync(u => u.Email == email && u.UserId != userId);
+
+            if (emailExists)
+            {
+                throw new Exception("Користувач з такою електронною поштою вже існує.");
+            }
+
+            user.Email = email;
         }
 
-        var nicknameExists = await _context.Users
-            .AnyAsync(u => u.Nickname == nickname && u.UserId != userId);
-
-        if (nicknameExists)
+        if (!string.IsNullOrWhiteSpace(dto.Nickname))
         {
-            throw new Exception("Користувач з таким нікнеймом вже існує.");
+            var nickname = dto.Nickname.Trim();
+
+            var nicknameExists = await _context.Users
+                .AnyAsync(u => u.Nickname == nickname && u.UserId != userId);
+
+            if (nicknameExists)
+            {
+                throw new Exception("Користувач з таким нікнеймом вже існує.");
+            }
+
+            user.Nickname = nickname;
         }
 
-        if (!Enum.TryParse<VisibilityStatus>(dto.VisibilityStatus, true, out var visibilityStatus))
+        if (dto.Description is not null)
         {
-            throw new Exception("Некоректний статус видимості профілю.");
+            user.Description = dto.Description.Trim();
+        }
+
+        if (!string.IsNullOrWhiteSpace(dto.VisibilityStatus))
+        {
+            if (!Enum.TryParse<VisibilityStatus>(dto.VisibilityStatus, true, out var visibilityStatus))
+            {
+                throw new Exception("Некоректний статус видимості профілю.");
+            }
+
+            user.VisibilityStatus = visibilityStatus;
         }
 
         var wantsToChangePassword =
@@ -96,11 +117,6 @@ public class ProfileService : IProfileService
 
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
         }
-
-        user.Email = email;
-        user.Nickname = nickname;
-        user.Description = dto.Description?.Trim();
-        user.VisibilityStatus = visibilityStatus;
 
         await _context.SaveChangesAsync();
 

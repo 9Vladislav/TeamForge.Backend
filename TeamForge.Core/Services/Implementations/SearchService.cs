@@ -65,6 +65,14 @@ public class SearchService : ISearchService
                 u.UserId != currentUserId &&
                 u.VisibilityStatus == VisibilityStatus.Public);
 
+        if (!string.IsNullOrWhiteSpace(dto.Nickname))
+        {
+            var nickname = dto.Nickname.Trim().ToLower();
+
+            query = query.Where(u =>
+                u.Nickname.ToLower().Contains(nickname));
+        }
+
         if (dto.GameId.HasValue)
         {
             query = query.Where(u =>
@@ -121,7 +129,7 @@ public class SearchService : ISearchService
                     ratingDictionary.TryGetValue(
                         u.UserId,
                         out var rating)
-                    ? Math.Round(rating, 2)
+                    ? Math.Round(rating, 1)
                     : 0;
 
                 return new SearchUserResultDto

@@ -7,24 +7,27 @@ public static class ProfileValidator
 {
     public static void ValidateUpdateProfile(UpdateProfileDto dto)
     {
-        if (string.IsNullOrWhiteSpace(dto.Email))
+        if (dto.Email is not null)
         {
-            throw new Exception("Електронна пошта є обов'язковою.");
+            if (string.IsNullOrWhiteSpace(dto.Email))
+            {
+                throw new Exception("Електронна пошта не може бути порожньою.");
+            }
+
+            if (!IsValidEmail(dto.Email))
+            {
+                throw new Exception("Некоректний формат електронної пошти.");
+            }
         }
 
-        if (!IsValidEmail(dto.Email))
+        if (dto.Nickname is not null && string.IsNullOrWhiteSpace(dto.Nickname))
         {
-            throw new Exception("Некоректний формат електронної пошти.");
+            throw new Exception("Нікнейм не може бути порожнім.");
         }
 
-        if (string.IsNullOrWhiteSpace(dto.Nickname))
+        if (dto.VisibilityStatus is not null && string.IsNullOrWhiteSpace(dto.VisibilityStatus))
         {
-            throw new Exception("Нікнейм є обов'язковим.");
-        }
-
-        if (string.IsNullOrWhiteSpace(dto.VisibilityStatus))
-        {
-            throw new Exception("Статус видимості профілю є обов'язковим.");
+            throw new Exception("Статус видимості профілю не може бути порожнім.");
         }
 
         var wantsToChangePassword =

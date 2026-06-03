@@ -8,6 +8,7 @@ namespace TeamForge.Core.DTO.Search;
 
 public class SearchUsersRequestDto
 {
+    public string? Nickname { get; set; }
     public int? GameId { get; set; }
     public string? SkillLevel { get; set; }
     public int? DayOfWeek { get; set; }
