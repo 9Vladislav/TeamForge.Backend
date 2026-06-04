@@ -73,7 +73,7 @@ public class SearchService : ISearchService
                 u.Nickname.ToLower().Contains(nickname));
         }
 
-        if (dto.GameId.HasValue)
+        if (dto.GameId.HasValue && dto.GameId.Value > 0)
         {
             query = query.Where(u =>
                 u.UserGames.Any(ug => ug.GameId == dto.GameId.Value));
@@ -85,11 +85,14 @@ public class SearchService : ISearchService
                 u.UserGames.Any(ug => ug.SkillLevel == skillLevel.Value));
         }
 
-        if (dto.DayOfWeek.HasValue || timeFrom.HasValue || timeTo.HasValue)
+        if ((dto.DayOfWeek.HasValue && dto.DayOfWeek.Value > 0) ||
+            timeFrom.HasValue ||
+            timeTo.HasValue)
         {
             query = query.Where(u =>
                 u.ActivityPeriods.Any(ap =>
                     (!dto.DayOfWeek.HasValue ||
+                     dto.DayOfWeek.Value <= 0 ||
                      ap.DayOfWeek == dto.DayOfWeek.Value) &&
 
                     (!timeFrom.HasValue ||
@@ -140,18 +143,31 @@ public class SearchService : ISearchService
                     AverageRating = averageRating,
 
                     Games = u.UserGames
-                        .Select(ug => ug.Game.Name)
-                        .Distinct()
+                        .Select(ug => new SearchUserGameDto
+                        {
+                            UserGameId = ug.UserGameId,
+                            GameId = ug.GameId,
+                            GameName = ug.Game.Name,
+                            ImageUrl = ug.Game.ImageUrl,
+                            SkillLevel = ug.SkillLevel.ToString(),
+                            PlaystyleDescription = ug.PlaystyleDescription
+                        })
                         .ToList(),
 
-                    SkillLevels = u.UserGames
-                        .Select(ug => ug.SkillLevel.ToString())
-                        .Distinct()
+                    ActivityPeriods = u.ActivityPeriods
+                        .Select(ap => new SearchUserActivityPeriodDto
+                        {
+                            ActivityPeriodId = ap.ActivityPeriodId,
+                            DayOfWeek = ap.DayOfWeek,
+                            TimeFrom = ap.TimeFrom.ToString("HH:mm"),
+                            TimeTo = ap.TimeTo.ToString("HH:mm")
+                        })
                         .ToList()
                 };
             })
             .Where(u =>
                 !dto.MinRating.HasValue ||
+                dto.MinRating.Value <= 0 ||
                 u.AverageRating >= dto.MinRating.Value)
             .ToList();
 

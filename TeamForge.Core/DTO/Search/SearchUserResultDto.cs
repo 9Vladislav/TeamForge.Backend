@@ -12,6 +12,6 @@ public class SearchUserResultDto
     public string Nickname { get; set; } = string.Empty;
     public string? Description { get; set; }
     public double AverageRating { get; set; }
-    public List<string> Games { get; set; } = new();
-    public List<string> SkillLevels { get; set; } = new();
+    public List<SearchUserGameDto> Games { get; set; } = new();
+    public List<SearchUserActivityPeriodDto> ActivityPeriods { get; set; } = new();
 }
