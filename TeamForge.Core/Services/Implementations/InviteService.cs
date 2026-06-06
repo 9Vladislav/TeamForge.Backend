@@ -127,8 +127,8 @@ public class InviteService : IInviteService
                 )
                 ||
                 (
-                    i.ReceiverId == userId &&
-                    i.Status == InviteStatus.Cancelled
+                    i.SenderId == userId &&
+                    i.Status == InviteStatus.Declined
                 ))
             .OrderByDescending(i => i.CreatedAt)
             .ToListAsync();
