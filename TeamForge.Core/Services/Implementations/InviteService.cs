@@ -114,6 +114,28 @@ public class InviteService : IInviteService
         return await MapToDtoListAsync(invites, userId);
     }
 
+    public async Task<List<GameInviteDto>> GetHistoryInvitesAsync(int userId)
+    {
+        var invites = await _context.GameInvites
+            .Include(i => i.Sender)
+            .Include(i => i.Receiver)
+            .Include(i => i.Game)
+            .Where(i =>
+                (
+                    (i.SenderId == userId || i.ReceiverId == userId) &&
+                    i.Status == InviteStatus.Accepted
+                )
+                ||
+                (
+                    i.ReceiverId == userId &&
+                    i.Status == InviteStatus.Cancelled
+                ))
+            .OrderByDescending(i => i.CreatedAt)
+            .ToListAsync();
+
+        return await MapToDtoListAsync(invites, userId);
+    }
+
     public async Task<GameInviteDto> UpdateInviteStatusAsync(
         int userId,
         int inviteId,

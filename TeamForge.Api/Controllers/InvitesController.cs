@@ -61,6 +61,15 @@ public class InvitesController : ControllerBase
         return Ok(result);
     }
 
+    [HttpGet("history")]
+    public async Task<IActionResult> GetHistoryInvites()
+    {
+        var userId = GetCurrentUserId();
+        var result = await _inviteService.GetHistoryInvitesAsync(userId);
+
+        return Ok(result);
+    }
+
     [HttpPut("{inviteId:int}/status")]
     public async Task<IActionResult> UpdateInviteStatus(
         int inviteId,

@@ -13,5 +13,6 @@ public interface IInviteService
     Task<List<GameInviteDto>> GetIncomingInvitesAsync(int userId);
     Task<List<GameInviteDto>> GetOutgoingInvitesAsync(int userId);
     Task<List<GameInviteDto>> GetAcceptedInvitesAsync(int userId);
+    Task<List<GameInviteDto>> GetHistoryInvitesAsync(int userId);
     Task<GameInviteDto> UpdateInviteStatusAsync(int userId, int inviteId, UpdateInviteStatusDto dto);
 }
