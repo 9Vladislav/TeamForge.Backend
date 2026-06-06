@@ -96,10 +96,10 @@ public class SearchService : ISearchService
                      ap.DayOfWeek == dto.DayOfWeek.Value) &&
 
                     (!timeFrom.HasValue ||
-                     ap.TimeFrom <= timeFrom.Value) &&
+                     ap.TimeFrom >= timeFrom.Value) &&
 
                     (!timeTo.HasValue ||
-                     ap.TimeTo >= timeTo.Value)));
+                     ap.TimeTo <= timeTo.Value)));
         }
 
         var users = await query
