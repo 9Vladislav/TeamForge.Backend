@@ -102,9 +102,7 @@ public class FriendService : IFriendService
         var request = await _context.FriendRequests
             .Include(fr => fr.Sender)
             .Include(fr => fr.Receiver)
-            .FirstOrDefaultAsync(fr =>
-                fr.FriendRequestId == requestId &&
-                fr.ReceiverId == userId);
+            .FirstOrDefaultAsync(fr => fr.FriendRequestId == requestId);
 
         if (request is null)
         {
@@ -121,10 +119,29 @@ public class FriendService : IFriendService
             throw new Exception("Некоректний статус запиту.");
         }
 
+        if (status == FriendRequestStatus.Cancelled)
+        {
+            if (request.SenderId != userId)
+            {
+                throw new Exception("Скасувати можна тільки власний запит у друзі.");
+            }
+
+            request.Status = FriendRequestStatus.Cancelled;
+
+            await _context.SaveChangesAsync();
+
+            return MapToRequestDto(request);
+        }
+
+        if (request.ReceiverId != userId)
+        {
+            throw new Exception("Обробити можна тільки вхідний запит у друзі.");
+        }
+
         if (status != FriendRequestStatus.Accepted &&
             status != FriendRequestStatus.Declined)
         {
-            throw new Exception("Запит можна тільки прийняти або відхилити.");
+            throw new Exception("Запит можна тільки прийняти, відхилити або скасувати.");
         }
 
         request.Status = status;
