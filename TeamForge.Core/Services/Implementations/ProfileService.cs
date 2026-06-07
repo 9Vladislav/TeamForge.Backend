@@ -207,6 +207,18 @@ public class ProfileService : IProfileService
         TimeOnly.TryParse(dto.TimeFrom, out var timeFrom);
         TimeOnly.TryParse(dto.TimeTo, out var timeTo);
 
+        var duplicateExists = await _context.ActivityPeriods
+            .AnyAsync(ap =>
+                ap.UserId == userId &&
+                ap.DayOfWeek == dto.DayOfWeek &&
+                ap.TimeFrom == timeFrom &&
+                ap.TimeTo == timeTo);
+
+        if (duplicateExists)
+        {
+            throw new Exception("Такий період активності вже додано.");
+        }
+
         var activityPeriod = new ActivityPeriod
         {
             UserId = userId,
@@ -239,6 +251,19 @@ public class ProfileService : IProfileService
         if (activityPeriod is null)
         {
             throw new Exception("Період активності не знайдено.");
+        }
+
+        var duplicateExists = await _context.ActivityPeriods
+            .AnyAsync(ap =>
+                ap.ActivityPeriodId != activityPeriodId &&
+                ap.UserId == userId &&
+                ap.DayOfWeek == dto.DayOfWeek &&
+                ap.TimeFrom == timeFrom &&
+                ap.TimeTo == timeTo);
+
+        if (duplicateExists)
+        {
+            throw new Exception("Такий період активності вже додано.");
         }
 
         activityPeriod.DayOfWeek = dto.DayOfWeek;
