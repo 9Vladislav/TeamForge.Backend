@@ -112,6 +112,7 @@ public class RatingService : IRatingService
     public async Task<List<RatingDto>> GetUserRatingsAsync(int userId)
     {
         var ratings = await _context.Ratings
+            .Include(r => r.Author)
             .Include(r => r.Comments)
             .Where(r => r.ReceiverId == userId)
             .OrderByDescending(r => r.CreatedAt)
@@ -125,6 +126,7 @@ public class RatingService : IRatingService
     private async Task<RatingDto> GetRatingDtoAsync(int ratingId)
     {
         var rating = await _context.Ratings
+            .Include(r => r.Author)
             .Include(r => r.Comments)
             .FirstOrDefaultAsync(r => r.RatingId == ratingId);
 
@@ -144,6 +146,7 @@ public class RatingService : IRatingService
         {
             RatingId = rating.RatingId,
             AuthorId = rating.AuthorId,
+            AuthorNickname = rating.Author.Nickname,
             ReceiverId = rating.ReceiverId,
             InviteId = rating.InviteId,
             Score = rating.Score,

@@ -11,6 +11,7 @@ public class RatingDto
 {
     public int RatingId { get; set; }
     public int AuthorId { get; set; }
+    public string AuthorNickname { get; set; } = string.Empty;
     public int ReceiverId { get; set; }
     public int InviteId { get; set; }
     public int Score { get; set; }
