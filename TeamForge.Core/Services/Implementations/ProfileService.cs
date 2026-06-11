@@ -173,11 +173,32 @@ public class ProfileService : IProfileService
             throw new Exception("Гру в профілі не знайдено.");
         }
 
+        var game = await _context.Games
+            .FirstOrDefaultAsync(g => g.GameId == dto.GameId);
+
+        if (game is null)
+        {
+            throw new Exception("Гру не знайдено.");
+        }
+
+        var alreadyExists = await _context.UserGames
+            .AnyAsync(ug =>
+                ug.UserId == userId &&
+                ug.GameId == dto.GameId &&
+                ug.UserGameId != userGameId);
+
+        if (alreadyExists)
+        {
+            throw new Exception("Ця гра вже додана до профілю.");
+        }
+
         if (!Enum.TryParse<SkillLevel>(dto.SkillLevel, true, out var skillLevel))
         {
             throw new Exception("Некоректний рівень навичок.");
         }
 
+        userGame.GameId = dto.GameId;
+        userGame.Game = game;
         userGame.SkillLevel = skillLevel;
         userGame.PlaystyleDescription = dto.PlaystyleDescription?.Trim();
 
