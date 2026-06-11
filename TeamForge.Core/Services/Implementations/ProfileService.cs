@@ -292,6 +292,7 @@ public class ProfileService : IProfileService
     private async Task<ProfileDto> MapToProfileDtoAsync(User user)
     {
         var ratings = await _context.Ratings
+            .Include(r => r.Author)
             .Include(r => r.Comments)
             .Where(r => r.ReceiverId == user.UserId)
             .OrderByDescending(r => r.CreatedAt)
@@ -349,12 +350,13 @@ public class ProfileService : IProfileService
         {
             RatingId = rating.RatingId,
             AuthorId = rating.AuthorId,
+            AuthorNickname = rating.Author.Nickname,
             ReceiverId = rating.ReceiverId,
             InviteId = rating.InviteId,
             Score = rating.Score,
             CreatedAt = rating.CreatedAt,
             Comment = comment is null
-                ? null
+                        ? null
                 : new CommentDto
                 {
                     CommentId = comment.CommentId,
